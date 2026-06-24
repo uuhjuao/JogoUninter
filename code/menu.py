@@ -22,8 +22,8 @@ class Menu:
         while True:
             # MenuImage
             self.window.blit(source=self.surf, dest=self.rect)
-            self.menu_text(50, "Attack", COLOR_GREEN, ((WIN_WIDTH / 2), 70))
-            self.menu_text(50, "on Shinobi", COLOR_GREEN, ((WIN_WIDTH / 2), 120))
+            self.menu_text(50, "Attack", COLOR_WHITE, ((WIN_WIDTH / 2), 70))
+            self.menu_text(50, "on Shinobi", COLOR_WHITE, ((WIN_WIDTH / 2), 120))
 
 
             for i in range(len(MENU_OPTION)):
