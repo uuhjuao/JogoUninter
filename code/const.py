@@ -4,10 +4,16 @@ COLOR_WHITE = (255,255,255)
 
 #M
 MENU_OPTION = ('NEW GAME',
-               'SCORE',
+               'CONTROLS',
                'EXIT')
 
 
 #W
 WIN_WIDTH = 576
 WIN_HEIGHT = 324
+
+# PLAYER
+PLAYER_WIDTH = 50
+PLAYER_HEIGHT = 70
+GROUND_Y = 270
+PLAYER_SPEED = 5
