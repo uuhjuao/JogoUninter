@@ -7,6 +7,7 @@ from code.controls import Controls
 from code.level import Level
 from code.gameover import GameOver
 from code.nameinput import NameInput
+from code.score import Score
 
 
 class Game:
@@ -46,11 +47,10 @@ class Game:
 
                 game_over.run()
 
-                if result == "WIN":
-                    print("YOU WIN")
+            elif option == "SCORE":
 
-                elif result == "LOSE":
-                    print("YOU LOSE")
+                score = Score(self.window)
+                score.run()
 
             elif option == "CONTROLS":
 
