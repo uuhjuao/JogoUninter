@@ -23,7 +23,14 @@ class Game:
             if option == "NEW GAME":
 
                 level = Level(self.window)
-                level.run()
+
+                result = level.run()
+
+                if result == "WIN":
+                    print("YOU WIN")
+
+                elif result == "LOSE":
+                    print("YOU LOSE")
 
             elif option == "CONTROLS":
 

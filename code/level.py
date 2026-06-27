@@ -45,6 +45,8 @@ class Level:
             clock.tick(60)
             elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
             self.time = max(0, 60 - elapsed)
+            if self.time <= 0:
+                return "WIN"
 
             self.spawn_enemy()
 
@@ -52,7 +54,11 @@ class Level:
 
             # Atualiza
             self.player.move(keys)
+
             self.player.update()
+            if self.player.life <= 0:
+                return "LOSE"
+
             self.check_attack_collision()
 
             for enemy in self.enemy_list:
