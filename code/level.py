@@ -26,8 +26,9 @@ class Level:
         #HUD
         self.hud = HUD()
 
-        # Dados da partida
+        # Cronometro
         self.time = 60
+        self.start_time = pygame.time.get_ticks()
 
         # Enemies
         self.enemy_list = []
@@ -42,6 +43,8 @@ class Level:
         while True:
 
             clock.tick(60)
+            elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
+            self.time = max(0, 60 - elapsed)
 
             self.spawn_enemy()
 
