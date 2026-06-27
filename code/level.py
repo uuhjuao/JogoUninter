@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import pygame
-from code.const import WIN_WIDTH, COLOR_WHITE
+from code.const import WIN_WIDTH, COLOR_WHITE, MAX_ENEMIES
 from code.player import Player
 from code.HUD import HUD
 from code.enemy import Enemy
+import random
+
 
 
 class Level:
@@ -29,45 +31,49 @@ class Level:
 
         # Enemies
         self.enemy_list = []
+        self.spawn_time = pygame.time.get_ticks()
 
-        self.enemy_list.append(
-            Enemy("LEFT")
-        )
 
     def run(self):
 
         clock = pygame.time.Clock()
 
+
         while True:
 
             clock.tick(60)
 
-            # Captura as teclas pressionadas
+            self.spawn_enemy()
+
             keys = pygame.key.get_pressed()
 
-            # Move o jogador
+            # Atualiza
             self.player.move(keys)
+            self.player.update()
+            self.check_attack_collision()
 
-            # Desenha o fundo
+            for enemy in self.enemy_list:
+                enemy.update(self.player)
+
+                self.enemy_list = [
+                    enemy
+                    for enemy in self.enemy_list
+                    if enemy.alive
+                ]
+
+            # Desenha
             self.window.blit(self.surf, self.rect)
 
-            # Desenha o jogador
             self.player.draw(self.window)
 
             for enemy in self.enemy_list:
                 enemy.draw(self.window)
-
 
             self.hud.draw(
                 self.window,
                 self.player,
                 self.time
             )
-
-            self.player.update()
-
-            for enemy in self.enemy_list:
-                enemy.update(self.player)
 
             pygame.display.flip()
 
@@ -85,13 +91,40 @@ class Level:
                     if event.key == pygame.K_ESCAPE:
                         return
 
-    def draw_hearts(self):
+    def check_attack_collision(self):
 
-        start_x = WIN_WIDTH - 90
-        start_y = 10
+        if not self.player.attacking:
+            return
 
-        for i in range(self.player.life):
-            self.window.blit(
-                self.heart,
-                (start_x + i * 28, start_y)
+        for enemy in self.enemy_list:
+
+            if not enemy.alive:
+                continue
+
+            attack_rect = self.player.rect.copy()
+
+            if self.player.direction == "RIGHT":
+                attack_rect.width += 30
+
+            else:
+                attack_rect.x -= 30
+                attack_rect.width += 30
+
+            if attack_rect.colliderect(enemy.rect):
+                enemy.die()
+
+    def spawn_enemy(self):
+
+        current_time = pygame.time.get_ticks()
+
+        if (
+                current_time - self.spawn_time >= 3000
+                and len(self.enemy_list) < MAX_ENEMIES
+        ):
+            side = random.choice(["LEFT", "RIGHT"])
+
+            self.enemy_list.append(
+                Enemy(side)
             )
+
+            self.spawn_time = current_time

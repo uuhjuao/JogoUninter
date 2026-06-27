@@ -24,29 +24,24 @@ class Player(Entity):
 
         self.direction = "RIGHT"
 
-        self.idle_image = pygame.image.load("./asset/player_idle.png").convert_alpha()
-        self.attack_image = pygame.image.load("./asset/player_attack.png").convert_alpha()
-
         # Idle
         self.idle_image = pygame.image.load("./asset/player_idle.png").convert_alpha()
         self.idle_image = pygame.transform.scale(self.idle_image, (60, 80))
 
-        # Attack
+        # Ataque
         self.attack_image = pygame.image.load("./asset/player_attack.png").convert_alpha()
         self.attack_image = pygame.transform.scale(self.attack_image, (60, 80))
 
-        # Versões espelhadas
+        # Versões para esquerda
         self.idle_left = pygame.transform.flip(self.idle_image, True, False)
         self.attack_left = pygame.transform.flip(self.attack_image, True, False)
 
-        # Imagem inicial
+        # Imagem atual
         self.surf = self.idle_image
 
-        # Mantém o mesmo tamanho das duas imagens
-        self.idle_image = pygame.transform.scale(self.idle_image, (60, 80))
-        self.attack_image = pygame.transform.scale(self.attack_image, (60, 80))
-
-        self.surf = self.idle_image
+        # Controle do ataque
+        self.attacking = False
+        self.attack_time = 0
 
         self.attacking = False
 
