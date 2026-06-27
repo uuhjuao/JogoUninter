@@ -5,6 +5,8 @@ from code.menu import Menu
 from code.const import WIN_WIDTH, WIN_HEIGHT
 from code.controls import Controls
 from code.level import Level
+from code.gameover import GameOver
+from code.nameinput import NameInput
 
 
 class Game:
@@ -22,9 +24,27 @@ class Game:
 
             if option == "NEW GAME":
 
-                level = Level(self.window)
+                # Tela para digitar o nome
+                name_input = NameInput(self.window)
 
-                result = level.run()
+                player_name = name_input.run()
+
+                # Inicia a fase
+                level = Level(
+                    self.window,
+                    player_name
+                )
+                result, player_name, time_survived, kills = level.run()
+
+                game_over = GameOver(
+                    self.window,
+                    result,
+                    player_name,
+                    time_survived,
+                    kills
+                )
+
+                game_over.run()
 
                 if result == "WIN":
                     print("YOU WIN")

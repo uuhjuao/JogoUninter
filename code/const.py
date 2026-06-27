@@ -5,6 +5,7 @@ COLOR_WHITE = (255,255,255)
 #M
 MENU_OPTION = ('NEW GAME',
                'CONTROLS',
+               'SCORE',
                'EXIT')
 
 

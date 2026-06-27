@@ -18,15 +18,32 @@ class HUD:
         self.heart = pygame.image.load("./asset/heart.png").convert_alpha()
         self.heart = pygame.transform.scale(self.heart, (24, 24))
 
-    def draw(self, window, player, time):
+    def draw(self, window, player, player_name, time, kills):
+        # Nome do jogador
+        self.draw_text(
+            window,
+            20,
+            f"Player: {player_name}",
+            COLOR_WHITE,
+            (90, 20)
+        )
 
         # Tempo
         self.draw_text(
             window,
-            24,
+            20,
             f"Tempo: {time}",
             COLOR_WHITE,
-            (90, 20)
+            (90, 50)
+        )
+
+        # Kills
+        self.draw_text(
+            window,
+            20,
+            f"Kills: {kills}",
+            COLOR_WHITE,
+            (90, 80)
         )
 
         # Corações

@@ -12,9 +12,10 @@ import random
 
 class Level:
 
-    def __init__(self, window):
+    def __init__(self, window, player_name):
 
         self.window = window
+        self.player_name = player_name
 
         # Fundo da fase
         self.surf = pygame.image.load("./asset/back3.png")
@@ -26,8 +27,9 @@ class Level:
         #HUD
         self.hud = HUD()
 
-        # Cronometro
+        # Informações do jogo
         self.time = 60
+        self.kills = 0
         self.start_time = pygame.time.get_ticks()
 
         # Enemies
@@ -43,6 +45,10 @@ class Level:
         while True:
 
             clock.tick(60)
+
+            current_time = pygame.time.get_ticks()
+            self.time = 60 - (current_time - self.start_time) // 1000
+
             elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
             self.time = max(0, 60 - elapsed)
             if self.time <= 0:
@@ -64,6 +70,24 @@ class Level:
             for enemy in self.enemy_list:
                 enemy.update(self.player)
 
+                # Verifica derrota
+                if self.player.life <= 0:
+                    return (
+                        "LOSE",
+                        self.player_name,
+                        60 - self.time,
+                        self.kills
+                    )
+
+                # Verifica vitória
+                if self.time <= 0:
+                    return (
+                        "WIN",
+                        self.player_name,
+                        60 - self.time,
+                        self.kills
+                    )
+
                 self.enemy_list = [
                     enemy
                     for enemy in self.enemy_list
@@ -81,7 +105,9 @@ class Level:
             self.hud.draw(
                 self.window,
                 self.player,
-                self.time
+                self.player_name,
+                self.time,
+                self.kills
             )
 
             pygame.display.flip()
@@ -120,6 +146,7 @@ class Level:
                 attack_rect.width += 30
 
             if attack_rect.colliderect(enemy.rect):
+                self.kills += 1
                 enemy.die()
 
     def spawn_enemy(self):
