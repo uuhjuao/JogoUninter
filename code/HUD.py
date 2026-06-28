@@ -19,6 +19,7 @@ class HUD:
         self.heart = pygame.transform.scale(self.heart, (24, 24))
 
     def draw(self, window, player, player_name, time, kills):
+
         # Nome do jogador
         self.draw_text(
             window,

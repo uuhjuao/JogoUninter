@@ -28,6 +28,21 @@ class Menu:
             self.menu_text(50, "Attack", COLOR_GREEN, (WIN_WIDTH / 2, 70))
             self.menu_text(50, "on Shinobi", COLOR_GREEN, (WIN_WIDTH / 2, 120))
 
+            # Informações do aluno
+            self.menu_text(
+                14,
+                "RU: 5174119",
+                COLOR_WHITE,
+                (70, 20)
+            )
+
+            self.menu_text(
+                14,
+                "João Marçião",
+                COLOR_WHITE,
+                (85, 40)
+            )
+
             for i in range(len(MENU_OPTION)):
                 color = COLOR_GREEN if i == self.selected_option else COLOR_WHITE
 
