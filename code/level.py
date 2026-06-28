@@ -2,12 +2,12 @@
 # -*- coding: utf-8 -*-
 
 import pygame
-from code.const import WIN_WIDTH, COLOR_WHITE, MAX_ENEMIES
+import random
+
+from code.const import WIN_WIDTH, MAX_ENEMIES
 from code.player import Player
 from code.HUD import HUD
 from code.enemy import Enemy
-import random
-
 
 
 class Level:
@@ -24,7 +24,7 @@ class Level:
         # Jogador
         self.player = Player()
 
-        #HUD
+        # HUD
         self.hud = HUD()
 
         # Informações do jogo
@@ -32,76 +32,87 @@ class Level:
         self.kills = 0
         self.start_time = pygame.time.get_ticks()
 
-        # Enemies
+        # Inimigos
         self.enemy_list = []
         self.spawn_time = pygame.time.get_ticks()
-
 
     def run(self):
 
         clock = pygame.time.Clock()
 
+        pygame.mixer_music.load("./asset/attack_on_titan.mp3")
+        pygame.mixer_music.play(-1)
 
         while True:
 
             clock.tick(60)
 
-            current_time = pygame.time.get_ticks()
-            self.time = 60 - (current_time - self.start_time) // 1000
-
+            # Atualiza tempo
             elapsed = (pygame.time.get_ticks() - self.start_time) // 1000
             self.time = max(0, 60 - elapsed)
-            if self.time <= 0:
-                return "WIN"
 
+            # Verifica vitória
+            if self.time <= 0:
+                return (
+                    "WIN",
+                    self.player_name,
+                    60,
+                    self.kills
+                )
+
+            # Cria inimigos
             self.spawn_enemy()
 
+            # Captura teclas
             keys = pygame.key.get_pressed()
 
-            # Atualiza
+            # Atualiza jogador
             self.player.move(keys)
-
             self.player.update()
-            if self.player.life <= 0:
-                return "LOSE"
 
+            # Verifica derrota
+            if self.player.life <= 0:
+                return (
+                    "LOSE",
+                    self.player_name,
+                    60 - self.time,
+                    self.kills
+                )
+
+            # Verifica ataque do jogador nos inimigos
             self.check_attack_collision()
 
+            # Atualiza inimigos
             for enemy in self.enemy_list:
                 enemy.update(self.player)
 
-                # Verifica derrota
-                if self.player.life <= 0:
-                    return (
-                        "LOSE",
-                        self.player_name,
-                        60 - self.time,
-                        self.kills
-                    )
+            # Remove inimigos mortos
+            self.enemy_list = [
+                enemy
+                for enemy in self.enemy_list
+                if enemy.alive
+            ]
 
-                # Verifica vitória
-                if self.time <= 0:
-                    return (
-                        "WIN",
-                        self.player_name,
-                        60 - self.time,
-                        self.kills
-                    )
+            # Verifica derrota novamente após ataque dos inimigos
+            if self.player.life <= 0:
+                return (
+                    "LOSE",
+                    self.player_name,
+                    60 - self.time,
+                    self.kills
+                )
 
-                self.enemy_list = [
-                    enemy
-                    for enemy in self.enemy_list
-                    if enemy.alive
-                ]
-
-            # Desenha
+            # Desenha fundo
             self.window.blit(self.surf, self.rect)
 
+            # Desenha jogador
             self.player.draw(self.window)
 
+            # Desenha inimigos
             for enemy in self.enemy_list:
                 enemy.draw(self.window)
 
+            # Desenha HUD
             self.hud.draw(
                 self.window,
                 self.player,
@@ -124,7 +135,12 @@ class Level:
                         self.player.attack()
 
                     if event.key == pygame.K_ESCAPE:
-                        return
+                        return (
+                            "LOSE",
+                            self.player_name,
+                            60 - self.time,
+                            self.kills
+                        )
 
     def check_attack_collision(self):
 
@@ -154,8 +170,8 @@ class Level:
         current_time = pygame.time.get_ticks()
 
         if (
-                current_time - self.spawn_time >= 3000
-                and len(self.enemy_list) < MAX_ENEMIES
+            current_time - self.spawn_time >= 3000
+            and len(self.enemy_list) < MAX_ENEMIES
         ):
             side = random.choice(["LEFT", "RIGHT"])
 

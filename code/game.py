@@ -37,6 +37,14 @@ class Game:
                 )
                 result, player_name, time_survived, kills = level.run()
 
+                score = Score(self.window)
+
+                score.save_score(
+                    player_name,
+                    time_survived,
+                    kills
+                )
+
                 game_over = GameOver(
                     self.window,
                     result,
